@@ -1,11 +1,31 @@
+#!/bin/bash
+
+set -euo pipefail
+
+
+
 LIMIT=80
 
-USED=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
 
-if [ "$USED" -ge "$LIMIT" ]; then
-  echo "❌ DISK: ${USED}% (όριο ${LIMIT}%)"
-  exit 1
-else
-  echo "✅ DISK: ${USED}%"
-  exit 0
-fi
+
+check_disk() {
+
+  local used
+
+  used=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
+
+  if [ "$used" -ge "$LIMIT" ]; then
+
+    echo "❌ DISK: ${used}% (όριο ${LIMIT}%)"
+
+    return 1
+
+  fi
+
+  echo "✅ DISK: ${used}%"
+
+}
+
+
+
+check_disk
